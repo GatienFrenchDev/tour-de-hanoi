@@ -82,13 +82,7 @@ class Jeu:
                 if self.tour_selected == i and j == len(tour.content) : clr = 11 if self.depart == i else 8
                 pyxel.rect(800*i/4-(50+(plateau-1)*30)/2, 300-25*(j-1), 50+(plateau-1)*30, 15, clr)
     
-
-    def gui(self):
-        pyxel.init(800, 500, "Tour de Hanoi", 60, display_scale=1)
-        pyxel.mouse(True)
-        pyxel.run(self.update, self.draw)
-    
-    def console(self):
+    def start(self):
         print("""
  _   _   ___   _   _ _____ _____ 
 | | | | / _ \ | \ | |  _  |_   _|
@@ -97,8 +91,24 @@ class Jeu:
 | | | || | | || |\  \ \_/ /_| |_ 
 \_| |_/\_| |_/\_| \_/\___/ \___/
                     - Gatien G.\n\n
+       1. Lancer le jeu en console
+       2. Lancer le jeu avec une GUI
         """)
-        time.sleep(1)
+        choix = input('\n')
+        if choix == '1':
+            self.console()
+        elif choix == '2':
+            self.gui()
+        else:
+            self.start()
+        
+
+    def gui(self):
+        pyxel.init(800, 500, "Tour de Hanoi", 60, display_scale=1)
+        pyxel.mouse(True)
+        pyxel.run(self.update, self.draw)
+    
+    def console(self):
         while self.tours[2].taille() < self.n:
             os.system('cls' if os.name == 'nt' else 'clear')
             #print(self)
@@ -117,4 +127,4 @@ class Jeu:
         """)
 
 jeu = Jeu(5)
-jeu.gui()
+jeu.start()
