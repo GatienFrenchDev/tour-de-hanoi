@@ -3,13 +3,6 @@
 
 Version du jeu des tours de Hanoi codé en Python. Jouable aussi bien en console qu'avec une GUI.
 
-## Comment jouer ?
-Pour lancer le jeu en console :
-`jeu.console()` à la fin du fichier hanoi.py
-
-Pour lancer le jeu avec la gui:
-`jeu.gui()` (par défaut) à la fin du fichier hanoi.py
-
 ## A propos
 La GUI utilise le module pyxel.
 

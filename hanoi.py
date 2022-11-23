@@ -82,7 +82,11 @@ class Jeu:
                 if self.tour_selected == i and j == len(tour.content) : clr = 11 if self.depart == i else 8
                 pyxel.rect(800*i/4-(50+(plateau-1)*30)/2, 300-25*(j-1), 50+(plateau-1)*30, 15, clr)
     
+    def clear_terminal(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        
     def start(self):
+        self.clear_terminal()
         print("""
  _   _   ___   _   _ _____ _____ 
 | | | | / _ \ | \ | |  _  |_   _|
@@ -101,7 +105,6 @@ class Jeu:
             self.gui()
         else:
             self.start()
-        
 
     def gui(self):
         pyxel.init(800, 500, "Tour de Hanoi", 60, display_scale=1)
@@ -110,9 +113,8 @@ class Jeu:
     
     def console(self):
         while self.tours[2].taille() < self.n:
-            os.system('cls' if os.name == 'nt' else 'clear')
-            #print(self)
-            self.refresh()
+            self.clear_terminal()
+            print(self)
             arr = input("déplacer l'anneau de la tour n° ")
             dep = input("vers la tour n° ")
             nb = ["1", "2", "3"]
