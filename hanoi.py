@@ -12,14 +12,22 @@ class Jeu:
     Objet représentant le jeu des Tours de Hanoï.
     Pour démarrer le jeu : appeler la méthode .start()
     """
-    def __init__(self, n=5):
+
+    def __init__(self, n=5, refresh_rate=30):
         """
-        Créer une instance de jeu des tours de hanoi
+        Créer une instance de jeu des tours de hanoi.
         :param int n: Nombre de plateaux (par défaut 5)
+        :param bool bot: Active ou désactive la résolution automatique
+        :param int refresh_rate: Nombre de rafraichisements par seconde
         """
         self.n = n
         self.tour_selected = 1
+        self.fps = refresh_rate
         self.focus = False
+        self.current_frame = 0
+        self.bot = False
+        self.moyen = 0
+        self.petit = 0
         self.depart = -1
         self.coup = 0
         self.tours = [Pile(), Pile(), Pile()]
@@ -33,7 +41,7 @@ class Jeu:
         :param int depart: Numéro de la tour de depart
         :param int arrivee: Numéro de la tour d'arrivée
         """
-        if self.tours[depart-1].taille() == 0 : return
+        if self.tours[depart-1].taille() == 0: return
         if len(self.tours[arrivee-1].content) != 0:
             if self.tours[depart-1].content[-1] > self.tours[arrivee-1].content[-1]:
                 self.clear_terminal()
@@ -46,7 +54,7 @@ class Jeu:
                 return
         plateau = self.tours[depart-1].depiler()
         self.tours[arrivee-1].empiler(plateau)
-    
+
     def __str__(self) -> str:
         """
         Renvoie un affiche textuelle de l'état du jeu.
@@ -71,6 +79,33 @@ class Jeu:
         """
         Méthode appelée par Pyxel à chaque rafraichisement de la fenêtre.
         """
+        if self.bot:
+            self.current_frame += 1
+            if self.current_frame % self.fps*2 == 0:
+                self.petit = self.petit % 3
+                self.deplace(self.petit+1, (self.petit+1)%3+1)
+                self.petit += 1
+
+                self.moyen = self.moyen % 3
+                self.deplace(self.moyen+1, (self.moyen+2)%3+1)
+                self.moyen += 2
+
+                self.petit = self.petit % 3
+                self.deplace(self.petit+1, (self.petit+1)%3+1)
+                self.petit += 1
+                # for i in range(len(self.tours)):
+                #     if not self.tours[i].est_vide():
+                #         if self.moyen:
+                #             if i < 2:
+                #                 self.deplace(i+1, i+3)
+                #                 self.moyen = False
+                #                 pass
+                #         else:
+                #             self.deplace(i+1, i+2)
+                #             self.moyen = True
+                #         break
+
+            return
         if pyxel.btnp(pyxel.KEY_RIGHT):
             self.tour_selected = 3 if self.tour_selected == 3 else self.tour_selected + 1
         elif pyxel.btnp(pyxel.KEY_LEFT):
@@ -125,11 +160,15 @@ class Jeu:
                     - Gatien G.\n\n
        1. Lancer le jeu en console
        2. Lancer le jeu avec une GUI
+       3. Lancer la résolution automatique
         """)
         choix = input('\n')
         if choix == '1':
             self.console()
         elif choix == '2':
+            self.gui()
+        elif choix == '3':
+            self.bot = True
             self.gui()
         else:
             self.start()
@@ -137,8 +176,9 @@ class Jeu:
     def gui(self):
         """
         Méthode permettant de lancer le jeu avec une GUI (Graphical User Interface).
+        :param bool mouse: Active ou désactive l'affichage de la souris.
         """
-        pyxel.init(800, 500, "Tour de Hanoi", 20, display_scale=1)
+        pyxel.init(800, 500, "Tour de Hanoi", self.fps, display_scale=1)
         pyxel.mouse(True)
         pyxel.run(self.update, self.draw)
     
@@ -164,5 +204,6 @@ class Jeu:
 
 
 # Lance une instance du jeu.
-jeu = Jeu()
-jeu.start()
+if __name__ == "__main__":
+    jeu = Jeu(n=4)
+    jeu.start()
