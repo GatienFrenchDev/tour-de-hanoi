@@ -1,4 +1,6 @@
+#!/usr/bin/env python3
 # Gatien Gillot - Tour de Hanoi
+# repo : git@github.com:GatienFrenchDev/tour-de-hanoi.git
 
 from pile import Pile
 import time, os, pyxel
