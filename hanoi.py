@@ -1,9 +1,10 @@
-#!/usr/bin/env python3
 # Gatien Gillot - Tour de Hanoi
-# repo : git@github.com:GatienFrenchDev/tour-de-hanoi.git
+# repo : https://github.com/GatienFrenchDev/tour-de-hanoi
 
 from pile import Pile
-import time, os, pyxel
+from time import sleep
+from os import name, system
+import pyxel
 
 
 class Jeu:
@@ -41,7 +42,7 @@ class Jeu:
         MOUVEMENT IMPOSSIBLE
           ===============
                 """)
-                time.sleep(1)
+                sleep(1)
                 return
         plateau = self.tours[depart-1].depiler()
         self.tours[arrivee-1].empiler(plateau)
@@ -105,7 +106,7 @@ class Jeu:
         """
         Méthode permettant de vider le terminal.
         """
-        os.system('cls' if os.name == 'nt' else 'clear')
+        system('cls' if name == 'nt' else 'clear')
         
     def start(self):
         """
@@ -137,7 +138,7 @@ class Jeu:
         """
         Méthode permettant de lancer le jeu avec une GUI (Graphical User Interface).
         """
-        pyxel.init(800, 500, "Tour de Hanoi", 30, display_scale=1)
+        pyxel.init(800, 500, "Tour de Hanoi", 20, display_scale=1)
         pyxel.mouse(True)
         pyxel.run(self.update, self.draw)
     
