@@ -35,10 +35,11 @@ class Jeu:
         if self.tours[depart-1].taille() == 0 : return
         if len(self.tours[arrivee-1].content) != 0:
             if self.tours[depart-1].content[-1] > self.tours[arrivee-1].content[-1]:
+                self.clear_terminal()
                 print("""
-                ===============
-                MOUVEMENT IMPOSSIBLE
-                ===============
+          ===============
+        MOUVEMENT IMPOSSIBLE
+          ===============
                 """)
                 time.sleep(1)
                 return
@@ -96,7 +97,8 @@ class Jeu:
             for plateau in tour.content:
                 j+=1
                 clr = 13
-                if self.tour_selected == i and j == len(tour.content) : clr = 11 if self.depart == i else 8
+                if self.tour_selected == i and j == len(tour.content) : clr = 8
+                if self.depart == i and j == len(tour.content): clr = 11
                 pyxel.rect(800*i/4-(50+(plateau-1)*30)/2, 300-25*(j-1), 50+(plateau-1)*30, 15, clr) # petite formule (dont je ne suis pas peu fier) qui permet de positioner les plateaux de manière centrée sur les piquets sans utilser un seul if statement.
     
     def clear_terminal(self):
@@ -135,7 +137,7 @@ class Jeu:
         """
         Méthode permettant de lancer le jeu avec une GUI (Graphical User Interface).
         """
-        pyxel.init(800, 500, "Tour de Hanoi", 60, display_scale=1)
+        pyxel.init(800, 500, "Tour de Hanoi", 30, display_scale=1)
         pyxel.mouse(True)
         pyxel.run(self.update, self.draw)
     
