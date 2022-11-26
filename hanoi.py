@@ -41,7 +41,7 @@ class Jeu:
         :param int arrivee: Numéro de la tour d'arrivée
         """
         if self.tours[depart-1].taille() == 0: return
-        if len(self.tours[arrivee-1].content) != 0:
+        if self.tours[arrivee-1].content:
             if self.tours[depart-1].content[-1] > self.tours[arrivee-1].content[-1]:
                 self.clear_terminal()
                 print("""
@@ -95,9 +95,9 @@ class Jeu:
                 self.focus = False
                 self.deplace(self.depart, self.tour_selected)
                 self.depart = -1
-            else:
-                self.focus = True
-                self.depart = self.tour_selected
+                return
+            self.focus = True
+            self.depart = self.tour_selected
     
     def solver(self, k, source=1, auxiliary=2, destination=3) -> list:
         """
