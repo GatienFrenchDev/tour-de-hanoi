@@ -17,7 +17,6 @@ class Jeu:
         """
         Créer une instance de jeu des tours de hanoi.
         :param int n: Nombre de plateaux (par défaut 5)
-        :param bool bot: Active ou désactive la résolution automatique
         :param int refresh_rate: Nombre de rafraichisements par seconde
         """
         self.n = n
@@ -26,11 +25,11 @@ class Jeu:
         self.focus = False
         self.current_frame = 0
         self.bot = False
-        self.moyen = 0
-        self.petit = 0
+        self.action = 0
+        self.instructions = []
         self.depart = -1
         self.coup = 0
-        self.tours = [Pile(), Pile(), Pile()]
+        self.tours = (Pile(), Pile(), Pile())
         for i in range(n):
             self.tours[0].empiler(n-i)
 
@@ -82,29 +81,10 @@ class Jeu:
         if self.bot:
             self.current_frame += 1
             if self.current_frame % self.fps*2 == 0:
-                self.petit = self.petit % 3
-                self.deplace(self.petit+1, (self.petit+1)%3+1)
-                self.petit += 1
-
-                self.moyen = self.moyen % 3
-                self.deplace(self.moyen+1, (self.moyen+2)%3+1)
-                self.moyen += 2
-
-                self.petit = self.petit % 3
-                self.deplace(self.petit+1, (self.petit+1)%3+1)
-                self.petit += 1
-                # for i in range(len(self.tours)):
-                #     if not self.tours[i].est_vide():
-                #         if self.moyen:
-                #             if i < 2:
-                #                 self.deplace(i+1, i+3)
-                #                 self.moyen = False
-                #                 pass
-                #         else:
-                #             self.deplace(i+1, i+2)
-                #             self.moyen = True
-                #         break
-
+                if self.action > len(self.instructions)-1:
+                    return
+                self.deplace(self.instructions[self.action][0], self.instructions[self.action][1])
+                self.action += 1
             return
         if pyxel.btnp(pyxel.KEY_RIGHT):
             self.tour_selected = 3 if self.tour_selected == 3 else self.tour_selected + 1
@@ -119,6 +99,23 @@ class Jeu:
                 self.focus = True
                 self.depart = self.tour_selected
     
+    def solver(self, k, source=1, destination=3, auxiliary=2) -> list:
+        """
+        Méthode récursive retournant une liste
+        indiquant les mouvements nécessaires 
+        pour résoudre la partie.
+        :param int k: Nombre de disques en jeu.
+        :param int source: Numéro de la première tour
+        :param int auxiliary: Numéro de la seconde tour
+        :param int destination: Numéro de la troisième tour
+        """
+        if k == 1:
+            self.instructions += [[source, destination]]
+            return
+        self.solver(k-1, source, auxiliary, destination)
+        self.instructions += [[source, destination]]
+        self.solver(k-1, auxiliary, destination, source)
+
     def draw(self):
         """
         Méthode appelée par Pyxel à chaque rafraichisement de la fenêtre
@@ -169,6 +166,11 @@ class Jeu:
             self.gui()
         elif choix == '3':
             self.bot = True
+            self.clear_terminal()
+            print("""
+            Calcul des actions a effectuer ...
+            """)
+            self.solver(self.n)
             self.gui()
         else:
             self.start()
@@ -205,5 +207,5 @@ class Jeu:
 
 # Lance une instance du jeu.
 if __name__ == "__main__":
-    jeu = Jeu(n=4)
+    jeu = Jeu(n=6)
     jeu.start()
