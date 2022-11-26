@@ -99,7 +99,7 @@ class Jeu:
                 self.focus = True
                 self.depart = self.tour_selected
     
-    def solver(self, k, source=1, destination=3, auxiliary=2) -> list:
+    def solver(self, k, source=1, auxiliary=2, destination=3) -> list:
         """
         Méthode récursive retournant une liste
         indiquant les mouvements nécessaires 
@@ -112,9 +112,9 @@ class Jeu:
         if k == 1:
             self.instructions += [[source, destination]]
             return
-        self.solver(k-1, source, auxiliary, destination)
+        self.solver(k-1, source, destination, auxiliary)
         self.instructions += [[source, destination]]
-        self.solver(k-1, auxiliary, destination, source)
+        self.solver(k-1, auxiliary, source, destination)
 
     def draw(self):
         """
@@ -143,8 +143,8 @@ class Jeu:
     def start(self):
         """
         Méthode qui permet de démarrer le jeu et
-        ainsi proposer le choix entre lancer le jeu en
-        console ou avec une GUI.
+        ainsi proposer le choix entre lancer le jeu avec
+        une TUI ou avec une GUI.
         """
         self.clear_terminal()
         print("""
@@ -171,6 +171,7 @@ class Jeu:
             Calcul des actions a effectuer ...
             """)
             self.solver(self.n)
+            self.clear_terminal()
             self.gui()
         else:
             self.start()
@@ -207,5 +208,5 @@ class Jeu:
 
 # Lance une instance du jeu.
 if __name__ == "__main__":
-    jeu = Jeu(n=6)
+    jeu = Jeu(n=5)
     jeu.start()
